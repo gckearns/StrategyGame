@@ -16,15 +16,22 @@ public class TileMap : MonoBehaviour {
     private Tile selectedTile;
     private bool hasSelectedTile = false;
     private TileHighlight currentTileHighlight;
+	private WorldController worldController;
+	private GameManager gameManager;
+	private UICanvas uiCanvas;
 
     public int tileResolution = 32;
     public Texture2D textureAtlas;
     public int numTextureTiles = 3;
     public TileHighlight tileHighlight;
 
+
 	// Use this for initialization
 	void Start () {
         InitializeTileHighlights ();
+		worldController = (WorldController) FindObjectOfType<WorldController>();
+		gameManager = worldController.gameManager;
+		uiCanvas = gameManager.uiCanvas;
         GenerateMap ();
 	}
 	
@@ -65,6 +72,8 @@ public class TileMap : MonoBehaviour {
         tile.state = TileState.Selected;
         hasSelectedTile = true;
         TileHighlight (tile);
+		uiCanvas.ShowContextMenu(tile);
+		uiCanvas.gameObject.SetActive(true);
     }
 
     void ClearSelectedTile (){
@@ -72,16 +81,19 @@ public class TileMap : MonoBehaviour {
             ClearTileHighlight ();
         }
         hasSelectedTile = false;
+		uiCanvas.gameObject.SetActive(false);
     }
 
     void TileHighlight (Tile tile) {
         currentTileHighlight = (TileHighlight) Instantiate (tileHighlight);
         currentTileHighlight.transform.SetParent (transform);
         currentTileHighlight.transform.position = new Vector3 (tile.coords.x, 0.01f, tile.coords.y);
+//		GameObject building = GameObject.Find("Building");
+//		building.transform.position = new Vector3 (tile.coords.x + 0.5f, 0.5f, tile.coords.y + 0.5f);
     }
 
     void ClearTileHighlight (){
-        currentTileHighlight.Destroy ();
+		Destroy (currentTileHighlight.gameObject);
     }
 
     void InitializeTileHighlights(){

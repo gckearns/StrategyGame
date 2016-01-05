@@ -4,10 +4,14 @@ using System.Collections;
 public class WorldController : MonoBehaviour {
 
     public TileMap terrainMap;
-    private TileMap currentMap;
+	public GameManager gameManager;
+
+	private TileMap currentMap;
+
 
 	// Use this for initialization
 	void Start () {
+		gameManager = (GameManager) FindObjectOfType<GameManager>();
         NewMap ();
 	}
 	

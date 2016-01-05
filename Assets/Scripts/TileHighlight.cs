@@ -74,8 +74,4 @@ public class TileHighlight : MonoBehaviour {
         meshCollider.sharedMesh = mesh;
 
     }
-
-    public void Destroy(){
-        Destroy (this);
-    }
 }
