@@ -1,37 +1,28 @@
 ﻿using UnityEngine;
 using System.Collections;
+using StrategyGame;
 
 public class TileHighlight : MonoBehaviour {
     
-    public float tileSize { set; get; }
+    private float tileSide = StrategyGame.GameResources.TileSide;
 
     // Use this for initialization
 	void Start () {
-        
-	}
-	
-	// Update is called once per frame
-	void Update () {
-	
-	}
-
-    public TileHighlight InitializeHighlight(float tileSize) {
-        this.tileSize = tileSize;
-        GenerateHighlightTile ();
-        return this;
-    }
-
-    void GenerateHighlightTile () {
         GenerateMesh ();
-    }
+        OffsetTransform ();
+	}
 
     void GenerateMesh() {
-        int numQuadsX = 1;
-        int numQuadsZ = 1;
-        int numVertsX = 2;
-        int numVertsZ = 2;
+        int numMeshTilesX = 1;
+        int numMeshTilesZ = 1;
+        int numVertsX = (numMeshTilesX * 2);
+        int numVertsZ = (numMeshTilesZ * 2);
         int numVerts = numVertsX * numVertsZ;
-        int numTris = 2;
+        int numTris = (numMeshTilesX * numMeshTilesZ) * 2;
+        float dimX = numMeshTilesX * tileSide;
+        float dimZ = numMeshTilesZ * tileSide;
+        float halfX = dimX / 2;
+        float halfZ = dimZ / 2;
 
         Vector3[] verticies = new Vector3[numVerts];
         Vector3[] normals = new Vector3[numVerts];
@@ -41,15 +32,15 @@ public class TileHighlight : MonoBehaviour {
         int i = 0;
         for (int z = 0; z < numVertsZ; z++) {
             for (int x = 0; x < numVertsX; x++) {
-                verticies [i].Set (x * tileSize, 0, z * tileSize);
+                verticies [i].Set ((x * tileSide) - halfX, 0, (z * tileSide) - halfZ);
                 normals [i] = Vector3.up;
-                uv [i].Set ((float) x / (float) numQuadsX, (float) z / (float) numQuadsZ);
+                uv [i].Set ((float) x / (float) numMeshTilesX, (float) z / (float) numMeshTilesZ);
                 i++;
             }
         }
         i = 0;
-        for (int z = 0; z < numQuadsZ; z++) {
-            for (int x = 0; x < numQuadsX; x++) {
+        for (int z = 0; z < numMeshTilesZ; z++) {
+            for (int x = 0; x < numMeshTilesX; x++) {
                 triangles [i + 0] = x + (z * numVertsX);
                 triangles [i + 1] = x + (z * numVertsX) + numVertsX + 1 ;
                 triangles [i + 2] = x + (z * numVertsX) + 1;
@@ -72,6 +63,9 @@ public class TileHighlight : MonoBehaviour {
 
         meshFilter.sharedMesh = mesh;
         meshCollider.sharedMesh = mesh;
+    }
 
+    void OffsetTransform (){
+        
     }
 }

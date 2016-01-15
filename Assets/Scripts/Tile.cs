@@ -1,18 +1,23 @@
 ﻿using UnityEngine;
 using System.Collections;
-using StrategyResources;
+using StrategyGame;
 
 public class Tile {
 
     public TileMap map { get; set; }
-    public Vector2 coords { get; set; }
+    public Vector2 mapCoords { get; set; }
+    public Vector3 worldCoords { get; set; }
     public TileTerrainType terrainType { get; set; }
-    public TileState state { get; set; }
   
-    public Tile (TileMap map, Vector2 coords) {
+    public Tile (TileMap map, Vector2 mapCoords, Vector3 worldCoords) {
         this.map = map;
-        this.coords = coords;
+        this.mapCoords = mapCoords;
+        this.worldCoords = worldCoords;
         this.terrainType = TileTerrainType.Default;
-        this.state = TileState.Default;
+    }
+
+    public override string ToString ()
+    {
+        return string.Format ("[Tile: {0}, WorldCoords={1}, Type={2}]", this.mapCoords.ToString (), this.worldCoords.ToString (), terrainType);
     }
 }
