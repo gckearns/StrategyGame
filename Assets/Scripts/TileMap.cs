@@ -5,15 +5,15 @@ using StrategyGame;
 
 public class TileMap : MonoBehaviour {
 
-    private int playTilesX = StrategyGame.GameResources.PlayTilesX;
-    private int playTilesZ = StrategyGame.GameResources.PlayTilesZ;
-    private int numTilesX = StrategyGame.GameResources.NumTilesX;
-    private int numTilesZ = StrategyGame.GameResources.NumTilesZ;
-    private float mapDim = StrategyGame.GameResources.MapDim;
-    private int tileResolution = StrategyGame.GameResources.TileResolution;
-    private float tileSide = StrategyGame.GameResources.TileSide;
-    private float tileDiag = StrategyGame.GameResources.TileDiag;
-    private float tileRadius = StrategyGame.GameResources.TileRadius;
+    private int playTilesX;
+    private int playTilesZ;
+    private int numTilesX;
+    private int numTilesZ;
+    private float mapDim;
+    private int tileResolution;
+    private float tileSide;
+    private float tileDiag;
+    private float tileRadius;
     private Color[] colorsDefault;
     private Color[] colorsCrater;
     private Color[] colorsBorder;
@@ -24,7 +24,17 @@ public class TileMap : MonoBehaviour {
     public Tile[,] tiles { get; protected set; }
 
     void Start () {
-        GenerateMap2 ();
+        playTilesX = StrategyGame.GameResources.PlayTilesX;
+        playTilesZ = StrategyGame.GameResources.PlayTilesZ;
+        numTilesX = StrategyGame.GameResources.NumTilesX;
+        numTilesZ = StrategyGame.GameResources.NumTilesZ;
+        mapDim = StrategyGame.GameResources.MapDim;
+        tileResolution = StrategyGame.GameResources.TileResolution;
+        tileSide = StrategyGame.GameResources.TileSide;
+        tileDiag = StrategyGame.GameResources.TileDiag;
+        tileRadius = StrategyGame.GameResources.TileRadius;
+        GenerateTileColors ();
+        GenerateMap ();
         worldController = (WorldController)GetComponentInParent<WorldController> ();
     }
 
@@ -61,10 +71,10 @@ public class TileMap : MonoBehaviour {
 //            print ("center");
         }
         if (x == -1) {
-            x += numTilesX;
+            x += numTilesX; // border tile coordinates out of bounds, wrap around
         }
         if (y == -1) {
-            y += numTilesZ;
+            y += numTilesZ; // border tile coordinates out of bounds, wrap around
         }
 //        print ("Tile: (" + x + "," + y + ")");
         return tiles [x, y];
@@ -81,114 +91,19 @@ public class TileMap : MonoBehaviour {
         }
     }
 
-//	void GenerateMap () {
-//		GenerateMesh ();
-//        GenerateTiles ();
-//        GravelColors ();
-//        GenerateTexture ();
-//	}
-//		
-//	void GenerateMesh(){
-//        int numVertsX = numTilesX + 1;
-//        int numVertsZ = numTilesZ + 1;
-//		int numVerts = numVertsX * numVertsZ;
-//		int numTris = (numTilesX * numTilesZ) * 2;
-//
-//		Vector3[] verticies = new Vector3[numVerts];
-//		Vector3[] normals = new Vector3[numVerts];
-//        Vector2[] uv = new Vector2[numVerts];
-//		int[] triangles = new int[numTris * 3];
-//
-//		int i = 0;
-//		for (int z = 0; z < numVertsZ; z++) {
-//			for (int x = 0; x < numVertsX; x++) {
-//                verticies [i].Set (x * tileSize, 0, z * tileSize);
-//				normals [i] = Vector3.up;
-//                uv [i].Set ((float) x / (float) numTilesX, (float) z / (float) numTilesZ);
-//				i++;
-//			}
-//		}
-//        i = 0;
-//        for (int z = 0; z < numTilesZ; z++) {
-//            for (int x = 0; x < numTilesX; x++) {
-//                triangles [i + 0] = x + (z * numVertsX);
-//                triangles [i + 1] = x + (z * numVertsX) + numVertsX + 1 ;
-//                triangles [i + 2] = x + (z * numVertsX) + 1;
-//                triangles [i + 3] = x + (z * numVertsX);
-//                triangles [i + 4] = x + (z * numVertsX) + numVertsX;
-//                triangles [i + 5] = x + (z * numVertsX) + numVertsX + 1;
-//                i += 6;
-//            }
-//        }
-//
-//		Mesh mesh = new Mesh ();
-//		mesh.vertices = verticies;
-//		mesh.normals = normals;
-//        mesh.triangles = triangles;
-//        mesh.uv = uv;
-//        mesh.name = "TileMap";
-//
-//        MeshCollider meshCollider = (MeshCollider) GetComponent<MeshCollider>();
-//        MeshFilter meshFilter = (MeshFilter) GetComponent<MeshFilter>();
-//
-//        meshFilter.sharedMesh = mesh;
-//        meshCollider.sharedMesh = mesh;
-//	}
-//
-//    void GenerateTiles () {
-//        tiles = new Tile[numTilesX,numTilesZ];
-//        for (int z = 0; z < numTilesZ; z++) {
-//            for (int x = 0; x < numTilesX; x++) {
-//                tiles [x, z] = new Tile (this, new Vector2 (x, z), new Vector3 ((float) x * tileSize, 0f, (float) z * tileSize));
-//            }
-//        }
-//        for (int z = 0; z < playAreaZ; z++) {
-//            for (int x = 0; x < playAreaX; x++) {
-//                if ((x + z) < (playAreaX - 1)) {
-//                    tiles [x, z].terrainType = TileTerrainType.Border; // Bottom left
-//                    tiles [(numTilesX - 1) - x, z].terrainType = TileTerrainType.Border; // Bottom right
-//                    tiles [x, (numTilesZ - 1) - z].terrainType = TileTerrainType.Border; // Top left
-//                    tiles [(numTilesX - 1) - x, (numTilesZ - 1) - z].terrainType = TileTerrainType.Border; // Top right
-//                }
-//            }        
-//        }
-//        int addNumCraters = 2;
-//        while (addNumCraters > 0) {
-//			Vector2 randCoords = new Vector2 (Random.Range (0, numTilesX), Random.Range (0, numTilesZ));
-//            Tile selectedTile = tiles [(int) randCoords.x, (int) randCoords.y];
-//            if (selectedTile.terrainType == TileTerrainType.Default) {
-//                selectedTile.terrainType = TileTerrainType.Crater;
-//                addNumCraters --;
-//            }
-//        }
-//    }
-
     void GenerateTileColors () {
         this.colorsDefault = textureAtlas.GetPixels(0 * tileResolution, 0, tileResolution,tileResolution);
         this.colorsCrater = textureAtlas.GetPixels(1 * tileResolution, 0 ,tileResolution,tileResolution);
         this.colorsBorder = textureAtlas.GetPixels(2 * tileResolution, 0 ,tileResolution,tileResolution);
     }
 
-//    void GenerateTexture () {
-//        Texture2D mapTexture = new Texture2D(numTilesX * tileResolution, numTilesZ * tileResolution);
-//        for (int z = 0; z < numTilesZ; z++) {
-//            for (int x = 0; x < numTilesX; x++) {
-//                mapTexture.SetPixels (x * tileResolution, z * tileResolution, tileResolution, tileResolution, getTileColors (tiles [x, z]));
-//            }
-//        }
-//        MeshRenderer meshRenderer = (MeshRenderer)GetComponent<MeshRenderer> ();
-//        meshRenderer.sharedMaterials[0].mainTexture = mapTexture;
-//        mapTexture.Apply ();
-//    }
-
-    void GenerateMap2 () {
-        GenerateMesh2 ();
-        GenerateTiles2 ();
-        GenerateTileColors ();
-        GenerateTexture2 ();
+    void GenerateMap () {
+        GenerateMesh ();
+        GenerateTiles ();
+        GenerateTexture ();
     }
 
-    void GenerateMesh2(){
+    void GenerateMesh(){
         int numMeshTilesX = 1;
         int numMeshTilesZ = 1;
         int numVertsX = (numMeshTilesX * 2);
@@ -237,11 +152,7 @@ public class TileMap : MonoBehaviour {
         meshCollider.sharedMesh = mesh;
     }
 
-    Color[] GravelColors () {
-        return textureGravel.GetPixels(0,0,32,32);
-    }
-
-    void GenerateTiles2 () {
+    void GenerateTiles () {
         tiles = new Tile[numTilesX,numTilesZ];
         for (int z = 0; z < numTilesZ; z++) {
             for (int x = 0; x < numTilesX; x+=2) {
@@ -269,7 +180,7 @@ public class TileMap : MonoBehaviour {
 //        }
     }
 
-    void GenerateTexture2 () {
+    void GenerateTexture () {
         Texture2D mapTexture = new Texture2D(playTilesX * 32, playTilesZ * 32);
         for (int z = 0; z < playTilesZ; z++) {
             for (int x = 0; x < playTilesX; x++) {

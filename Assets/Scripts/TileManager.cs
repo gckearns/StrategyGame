@@ -21,10 +21,12 @@ public class TileManager : MonoBehaviour{
         worldController.ClearTileHighlight ();
         worldController.TileHighlight (tile);
         selectedTile = tile;
-        ModalPanel modalPanel = ModalPanel.Instance ();
-        UnityAction buildAction = new UnityAction (OnBuildClicked);
-        UnityAction cancelAction = new UnityAction (OnBuildClicked);
-        modalPanel.BuildDialogue (GetDialogueInfo ().GetStrings (), modalPanel.iconImage.sprite, buildAction, cancelAction);
+        ShowBuildMenuButtons ();
+    }
+
+    void ShowBuildMenuButtons (){
+        BuildMenuButtonContainer menuButtons = BuildMenuButtonContainer.Instance ();
+        menuButtons.Activate ();
     }
 
     public void OnBuildClicked() {
@@ -37,4 +39,6 @@ public class TileManager : MonoBehaviour{
             "Yield time: 4 days", "Yields: $9999, 55 pancakes, 2 birds, 1 bush", 
             "Requires: 300 metal, 1 container, 10 mooncrete", "Have: (10k metal), (1 container), (10 mooncrete)");
     }
+
+
 }

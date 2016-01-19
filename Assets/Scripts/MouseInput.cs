@@ -6,11 +6,16 @@ using StrategyGame;
 
 public class MouseInput : MonoBehaviour {
 
-    private Camera mainCamera = Camera.main;
+    private Camera mainCamera;
     private Vector3 dragWorldOrigin;
     private Vector3 dragScreenOrigin;
     private bool dragging = false;
-    private float minDrag = StrategyGame.GameResources.MinDragDistance;
+    private float minDrag;
+
+    void Start () {
+        mainCamera = Camera.main;
+        minDrag = StrategyGame.GameResources.MinDragDistance;
+    }
 
     void OnMouseDown () {
         if (StrategyGame.GameResources.UIHovering) {

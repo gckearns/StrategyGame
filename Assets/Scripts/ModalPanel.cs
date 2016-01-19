@@ -16,18 +16,18 @@ public class ModalPanel : MonoBehaviour {
     public Text textHas;
     public Button yesButton;
     public Button cancelButton;
-    public GameObject modalPanelObject;
 
-    private static ModalPanel modalPanel;
-
-    public static ModalPanel Instance () {
-        if (!modalPanel) {
-            modalPanel = FindObjectOfType(typeof (ModalPanel)) as ModalPanel;
-            if (!modalPanel)
-                Debug.LogError ("There needs to be one active ModalPanel script on a GameObject in your scene.");
-        }
-
-        return modalPanel;
+    void Start () {
+//        this.buildingName = GameObject.Find ("BuildingNameText").GetComponent <Text> ();
+//        this.iconImage = GameObject.Find ("BuildingImage").GetComponent <Image> ();
+//        this.buildingInfo = GameObject.Find ("BuildingInfoText").GetComponent <Text> ();
+//        this.textOne = GameObject.Find ("BuildingTextLine1").GetComponent <Text> ();
+//        this.textTwo = GameObject.Find ("BuildingTextLine2").GetComponent <Text> ();
+//        this.textThree = GameObject.Find ("BuildingTextLine3").GetComponent <Text> ();
+//        this.textRequires = GameObject.Find ("BuildingRequiresText").GetComponent <Text> ();
+//        this.textHas = GameObject.Find ("BuildingHasText").GetComponent <Text> ();
+//        this.yesButton = GameObject.Find ("BuildNowButton").GetComponent <Button> ();
+//        this.cancelButton = GameObject.Find ("CloseButton").GetComponent <Button> ();
     }
 
     // Yes/No/Cancel: A string, a Yes event, a No event and Cancel event
@@ -50,10 +50,10 @@ public class ModalPanel : MonoBehaviour {
         cancelButton.onClick.AddListener (cancelEvent);
         cancelButton.onClick.AddListener (ClosePanel);
 
-        modalPanelObject.SetActive (true);
+        gameObject.SetActive (true);
     }
 
     void ClosePanel () {
-        modalPanelObject.SetActive (false);
+        gameObject.SetActive (false);
     }
 }

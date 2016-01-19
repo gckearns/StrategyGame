@@ -8,9 +8,10 @@ public class BuildingType : MonoBehaviour {
     public string description;
     public InventoryItem[] costTypes;
     public int[] costAmounts;
+    public int powerRequirement;
     public int size;
     public int population;
     public InventoryItem[] yieldTypes;
-    public float yieldAmounts;
+    public float[] yieldAmounts;
     public float yieldFrequency;
 }

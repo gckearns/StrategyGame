@@ -3,5 +3,5 @@ using System.Collections;
 
 public class InventoryItem : MonoBehaviour {
     public string itemName;
-    public int currentAmount;
+    public float currentAmount;
 }

@@ -9,6 +9,17 @@ public class WorldController : MonoBehaviour {
     public BuildingType[] buildingTypes;
 
 	private TileMap currentMap;
+    private static WorldController worldController;
+
+    public static WorldController Instance () {
+        if (!worldController) {
+            worldController = FindObjectOfType(typeof (WorldController)) as WorldController;
+            if (!worldController)
+                Debug.LogError ("There needs to be one active WorldController script on a GameObject in your scene.");
+        }
+
+        return worldController;
+    }
 
 	// Use this for initialization
 	void Start () {
