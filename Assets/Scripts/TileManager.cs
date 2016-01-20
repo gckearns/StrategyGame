@@ -7,19 +7,17 @@ public class TileManager : MonoBehaviour{
 
     private Tile[,] tiles;
     private TileMap tileMap;
-    private WorldController worldController;
     private Tile selectedTile;
 
-    public TileManager Initialize(WorldController worldController, TileMap tileMap, Tile[,] tiles){
-        this.worldController = worldController;
+    public TileManager Initialize(TileMap tileMap, Tile[,] tiles){
         this.tileMap = tileMap;
         this.tiles = tiles;
         return this;
     }
 
     public void SelectTile (Tile tile) {
-        worldController.ClearTileHighlight ();
-        worldController.TileHighlight (tile);
+        WorldController.ClearTileHighlight ();
+        WorldController.TileHighlight (tile);
         selectedTile = tile;
         ShowBuildMenuButtons ();
     }

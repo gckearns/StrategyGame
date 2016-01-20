@@ -4,41 +4,34 @@ using System.Collections;
 public class WorldController : MonoBehaviour {
 
     public TileMap terrainMap;
-    public GameObject tileHighlight;
+    public GameObject Highlight;
     public TileManager tileManager;
-    public BuildingType[] buildingTypes;
+    public BuildingType[] BuildingTypes;
 
 	private TileMap currentMap;
-    private static WorldController worldController;
-
-    public static WorldController Instance () {
-        if (!worldController) {
-            worldController = FindObjectOfType(typeof (WorldController)) as WorldController;
-            if (!worldController)
-                Debug.LogError ("There needs to be one active WorldController script on a GameObject in your scene.");
-        }
-
-        return worldController;
-    }
+    public static BuildingType[] buildingTypes;
+    private static GameObject tileHighlight;
 
 	// Use this for initialization
 	void Start () {
+        tileHighlight = Highlight;
+        buildingTypes = BuildingTypes;
         NewMap ();
 	}
 
     void NewMap () {
         currentMap = (TileMap)Instantiate (terrainMap);
-        currentMap.transform.SetParent (this.transform);
-        tileManager = tileManager.Initialize (this, currentMap, currentMap.tiles);
+        currentMap.transform.SetParent (transform);
+        tileManager = tileManager.Initialize (currentMap, currentMap.tiles);
         ClearTileHighlight ();
     }
 
-    public void TileHighlight (Tile tile) {
+    public static void TileHighlight (Tile tile) {
         tileHighlight.transform.position = new Vector3 (tile.worldCoords.x, 0.01f, tile.worldCoords.z);
         tileHighlight.SetActive (true);
     }
 
-    public void ClearTileHighlight (){
+    public static void ClearTileHighlight (){
         tileHighlight.SetActive (false);
     }
 }

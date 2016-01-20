@@ -6,36 +6,36 @@ using System.Collections;
 public class UIMenu : MonoBehaviour {
 
     private static UIMenu buildMenu;
+    private static BuildingType[] buildings = WorldController.buildingTypes;
 
     public GameObject BuildMenu;
     public GameObject BuildMenuItem;
     public ModalPanel BuildPanel;
     public RectTransform content;
 
+
     public void PopulateMenu (int menu) {
         gameObject.SetActive (true);
-        switch (menu) {
-        default:
-            break;
+//        BuildingType[] bldgs = GetBuildings (menu);
+        BuildingType[] bldgs = WorldController.buildingTypes;
+        for (int i = 0; i < bldgs.Length; i++) {
+            ModalPanel modalPanel = Instantiate<ModalPanel> (BuildPanel);    
+            modalPanel.transform.SetParent (content);
+            modalPanel.GetComponent <RectTransform> ().anchoredPosition3D = new Vector3 (0, -254 * i, 0);
+            modalPanel.GetComponent <RectTransform> ().sizeDelta = new Vector2 (0, 254);
+            modalPanel.BuildDialogue (GetBuildingDialogueInfo (bldgs[i]).GetStrings (), 
+                modalPanel.iconImage.sprite, GetBuildAction (i), GetBuildAction (i));
         }
-        WorldController wc = WorldController.Instance ();
-        BuildingType bld = wc.buildingTypes [0];
-        UnityAction buildAction = new UnityAction (delegate{OnBuildClicked(1);});
-        UnityAction cancelAction = new UnityAction (delegate{OnBuildClicked(2);});
-        UnityAction buildAction2 = new UnityAction (delegate{OnBuildClicked(3);});
-        UnityAction cancelAction2 = new UnityAction (delegate{OnBuildClicked(4);});
-        ModalPanel modalPanel = Instantiate<ModalPanel> (BuildPanel);
-        modalPanel.transform.SetParent (content);
-        modalPanel.GetComponent <RectTransform> ().anchoredPosition3D = new Vector3 (0, 0, 0);
-        modalPanel.GetComponent <RectTransform> ().sizeDelta = new Vector2 (0, 254);
-        modalPanel.BuildDialogue (GetBuildingDialogueInfo (bld).GetStrings (), modalPanel.iconImage.sprite, buildAction, cancelAction);
-        ModalPanel modalPanel2 = Instantiate<ModalPanel> (BuildPanel);
-        modalPanel2.transform.SetParent (content);
-        modalPanel2.GetComponent <RectTransform> ().anchoredPosition3D = new Vector3 (0, -254, 0);
-        modalPanel2.GetComponent <RectTransform> ().sizeDelta = new Vector2 (0, 254);
-        modalPanel2.BuildDialogue (GetBuildingDialogueInfo (bld).GetStrings (), modalPanel2.iconImage.sprite, buildAction2, cancelAction2);
-        GetComponent<ScrollRect> ().Rebuild (CanvasUpdate.Layout);
-        content.sizeDelta = new Vector2(0, 254 * 2);
+        content.sizeDelta = new Vector2(0, 254 * bldgs.Length);
+    }
+
+    static BuildingType[] GetBuildings(int type){
+        
+        return buildings;
+    }
+
+    UnityAction GetBuildAction (int building) {
+        return delegate{OnBuildClicked(building);};
     }
 
     public void OnBuildClicked(int id){
@@ -56,8 +56,7 @@ public class UIMenu : MonoBehaviour {
         float[] yNums = bldg.yieldAmounts;
         string yieldString = "Yields: ";
         for (int i = 0; i < yTypes.Length; i++) {
-            yieldString += yTypes [i].itemName;
-//                + ": " + yNums[i] + " " ;
+            yieldString += yTypes [i].itemName + ": " + yNums [i] + " ";
         }
         InventoryItem[] costTypes = bldg.costTypes;
         int[] costNums = bldg.costAmounts;
