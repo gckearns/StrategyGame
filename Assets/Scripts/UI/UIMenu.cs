@@ -9,15 +9,13 @@ public class UIMenu : MonoBehaviour {
     private static BuildingType[] buildings = WorldController.buildingTypes;
 
     public GameObject BuildMenu;
-    public GameObject BuildMenuItem;
     public ModalPanel BuildPanel;
     public RectTransform content;
 
 
-    public void PopulateMenu (int menu) {
-        gameObject.SetActive (true);
-//        BuildingType[] bldgs = GetBuildings (menu);
-        BuildingType[] bldgs = WorldController.buildingTypes;
+    public void PopulateMenu (int bldgCategory) {
+        ClearMenu ();
+        BuildingType[] bldgs = BuildingManager.GetBuildingsOfCategory(bldgCategory);
         for (int i = 0; i < bldgs.Length; i++) {
             ModalPanel modalPanel = Instantiate<ModalPanel> (BuildPanel);    
             modalPanel.transform.SetParent (content);
@@ -27,11 +25,19 @@ public class UIMenu : MonoBehaviour {
                 modalPanel.iconImage.sprite, GetBuildAction (i), GetBuildAction (i));
         }
         content.sizeDelta = new Vector2(0, 254 * bldgs.Length);
+        gameObject.SetActive (true);
     }
 
     static BuildingType[] GetBuildings(int type){
         
         return buildings;
+    }
+
+    void ClearMenu () {
+        for (int i = 0; i < content.childCount; i++) {
+            GameObject g = content.GetChild (i).gameObject;
+            g.SetActive (false);
+        }
     }
 
     UnityAction GetBuildAction (int building) {
@@ -52,13 +58,13 @@ public class UIMenu : MonoBehaviour {
         int jobs = bldg.population;
         string details = "Size: " + size + "x" + size + "  Pwr: " + pwr + "  Jobs: " + jobs;
         string yTime = "Yield time: " + bldg.yieldFrequency;
-        InventoryItem[] yTypes = bldg.yieldTypes;
+        InventoryItem[] yTypes = bldg.yieldTypes.ToArray ();
         float[] yNums = bldg.yieldAmounts;
         string yieldString = "Yields: ";
         for (int i = 0; i < yTypes.Length; i++) {
             yieldString += yTypes [i].itemName + ": " + yNums [i] + " ";
         }
-        InventoryItem[] costTypes = bldg.costTypes;
+        InventoryItem[] costTypes = bldg.costTypes.ToArray ();
         int[] costNums = bldg.costAmounts;
         string costString = "Requires: ";
         for (int i = 0; i < costTypes.Length; i++) {

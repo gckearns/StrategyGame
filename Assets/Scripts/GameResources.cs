@@ -8,9 +8,17 @@ namespace StrategyGame {
     public enum GoodsCategory {
         Solid, Liquid, Gas
     }
-    public enum BuildingState {
-        Default
+
+    public enum BuildingCategory
+    {
+        Housing, Services, Industry, Food
     }
+
+    public enum ItemCategory
+    {
+        GoodService, Commodity, Ship
+    }
+
 	public static class GameResources {
         public static bool UIHovering { get; set;}
         public static int PlayTilesX { get { return 32; } }
@@ -25,6 +33,7 @@ namespace StrategyGame {
         public static float MapDim { get { return mapDim; } }
         public static Vector3 MapBottomLeft { get { return mapBottomLeft; } }
         public static Vector3 MapTopRight { get { return mapTopRight; } }
+        public static BuildingCategory[] BuildingCategories {get { return buildingCategories; } }
 
         private static int numTilesX = PlayTilesX * 2;
         private static int numTilesZ = PlayTilesZ;
@@ -33,6 +42,8 @@ namespace StrategyGame {
         private static float mapDim = tileDiag * numTilesZ;
         private static Vector3 mapBottomLeft = new Vector3 ( 0, 0, (numTilesZ * TileSide) / 2);
         private static Vector3 mapTopRight = new Vector3 ( (numTilesX * TileSide), 0, (numTilesZ * TileSide) / 2);
+        private static BuildingCategory[] buildingCategories = new BuildingCategory[]{BuildingCategory.Housing, 
+            BuildingCategory.Services, BuildingCategory.Industry, BuildingCategory.Food};
     }
 }
 

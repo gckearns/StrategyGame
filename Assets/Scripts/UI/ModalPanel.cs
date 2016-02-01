@@ -17,19 +17,6 @@ public class ModalPanel : MonoBehaviour {
     public Button yesButton;
     public Button cancelButton;
 
-    void Start () {
-//        this.buildingName = GameObject.Find ("BuildingNameText").GetComponent <Text> ();
-//        this.iconImage = GameObject.Find ("BuildingImage").GetComponent <Image> ();
-//        this.buildingInfo = GameObject.Find ("BuildingInfoText").GetComponent <Text> ();
-//        this.textOne = GameObject.Find ("BuildingTextLine1").GetComponent <Text> ();
-//        this.textTwo = GameObject.Find ("BuildingTextLine2").GetComponent <Text> ();
-//        this.textThree = GameObject.Find ("BuildingTextLine3").GetComponent <Text> ();
-//        this.textRequires = GameObject.Find ("BuildingRequiresText").GetComponent <Text> ();
-//        this.textHas = GameObject.Find ("BuildingHasText").GetComponent <Text> ();
-//        this.yesButton = GameObject.Find ("BuildNowButton").GetComponent <Button> ();
-//        this.cancelButton = GameObject.Find ("CloseButton").GetComponent <Button> ();
-    }
-
     // Yes/No/Cancel: A string, a Yes event, a No event and Cancel event
     public void BuildDialogue (string[] dialogueStrings, Sprite icon, UnityAction buildEvent, UnityAction cancelEvent) {
         this.buildingName.text = dialogueStrings [0];
