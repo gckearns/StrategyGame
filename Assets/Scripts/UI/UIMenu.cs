@@ -50,7 +50,7 @@ public class UIMenu : MonoBehaviour {
     }
 
     public DialogueTextArray GetBuildingDialogueInfo(BuildingType bldg) {
-        string name = bldg.buildingType;
+        string name = bldg.dataName;
         Sprite icon = bldg.icon;
         string desc = bldg.description;
         int size = bldg.size;
@@ -58,17 +58,17 @@ public class UIMenu : MonoBehaviour {
         int jobs = bldg.population;
         string details = "Size: " + size + "x" + size + "  Pwr: " + pwr + "  Jobs: " + jobs;
         string yTime = "Yield time: " + bldg.yieldFrequency;
-        InventoryItem[] yTypes = bldg.yieldTypes.ToArray ();
+        ItemType[] yTypes = bldg.yieldTypes.ToArray ();
         float[] yNums = bldg.yieldAmounts;
         string yieldString = "Yields: ";
         for (int i = 0; i < yTypes.Length; i++) {
-            yieldString += yTypes [i].itemName + ": " + yNums [i] + " ";
+            yieldString += yTypes [i].dataName + ": " + yNums [i] + " ";
         }
-        InventoryItem[] costTypes = bldg.costTypes.ToArray ();
+        ItemType[] costTypes = bldg.costTypes.ToArray ();
         int[] costNums = bldg.costAmounts;
         string costString = "Requires: ";
         for (int i = 0; i < costTypes.Length; i++) {
-            costString += "(" + costNums[i] + " " + costTypes[i].itemName + ") ";
+            costString += "(" + costNums[i] + " " + costTypes[i].dataName + ") ";
         }
         return new DialogueTextArray (name, desc, details, yTime, yieldString, costString, "Have: (99 somthing)");
     }

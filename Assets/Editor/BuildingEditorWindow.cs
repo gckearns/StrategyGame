@@ -33,9 +33,9 @@ public class BuildingEditorWindow : EditorWindow {
         }
         bool bldgListPopulated = false;
         RefreshBuildingData ();
-        if (bldgTypes.Length > 0) {
-            bldgListPopulated = true;
-        }
+//        if (bldgTypes.Length > 0) {
+//            bldgListPopulated = true;
+//        }
         GUILayoutOption xWidth = GUILayout.ExpandWidth (true);
         GUILayoutOption xWidthNo = GUILayout.ExpandWidth (false);
 
@@ -53,9 +53,9 @@ public class BuildingEditorWindow : EditorWindow {
         if (GUILayout.Button ("Building Name")) {
             //sort by name
         }
-        if (bldgListPopulated) {
+//        if (bldgListPopulated) {
             bldgSelection = GUILayout.SelectionGrid (bldgSelection, strings, 1, customStyle, xWidth);
-        }
+//        }
         EditorGUILayout.EndVertical ();
 
         // ID column
@@ -63,9 +63,9 @@ public class BuildingEditorWindow : EditorWindow {
         if (GUILayout.Button ("ID")) {
             //sort by ID
         }
-        if (bldgListPopulated) {
+//        if (bldgListPopulated) {
             bldgSelection = GUILayout.SelectionGrid (bldgSelection, ids, 1, customStyle, xWidth);
-        }
+//        }
         EditorGUILayout.EndVertical ();
 
         // Category column
@@ -73,45 +73,47 @@ public class BuildingEditorWindow : EditorWindow {
         if (GUILayout.Button ("Category")) {
             //sort by category
         }
-        if (bldgListPopulated) {
+//        if (bldgListPopulated) {
             bldgSelection = GUILayout.SelectionGrid (bldgSelection, cats, 1, customStyle, xWidth);
-        }
+//        }
         EditorGUILayout.EndVertical ();
 
         bool changed = EditorGUI.EndChangeCheck ();
         if (changed) {
             GUI.FocusControl ("name");
         }
-        if (bldgListPopulated) {
+//        if (bldgListPopulated) {
             if (bldgSelection < 0 || bldgSelection >= bldgTypes.Length) {
                 bldgSelection = 0;
             }
+        if (bldgTypes.Length > 0) {
             bldg = bldgTypes [bldgSelection];
         }
+//        }
         EditorGUILayout.EndHorizontal ();
         EditorGUILayout.EndScrollView ();
 
         // Right pane
         scrollPosition2 = EditorGUILayout.BeginScrollView (scrollPosition2,xWidth);
         EditorGUILayout.BeginVertical ();
-        if (bldgListPopulated) {
-            bldg.buildingType = EditorGUILayout.TextField ("Name", bldg.buildingType);
+        if (bldgTypes.Length > 0) {
+            bldg.dataName = EditorGUILayout.TextField ("Name", bldg.dataName);
             bldg.description = EditorGUILayout.TextField ("Description", bldg.description);
             bldg.id = EditorGUILayout.IntField ("ID", bldg.id);
             bldg.category = (StrategyGame.BuildingCategory)EditorGUILayout.EnumPopup ("Category", bldg.category);
             bldg.size = EditorGUILayout.IntSlider ("Size", bldg.size, 1, 3);
             bldg.powerRequirement = EditorGUILayout.IntField ("Power", bldg.powerRequirement);
 
-            string[] itemTypes = new string[ItemManager.GetCachedItems ().Length];
-            for (int i = 0; i < ItemManager.GetCachedItems ().Length; i++) {
+            string[] itemTypes = new string[ItemManager.SavedData.Count];
+            for (int i = 0; i < ItemManager.SavedData.Count; i++) {
 //            bldg.costTypes[i] = EditorGUILayout.ObjectField ("Item Type", bldg.costTypes[i], typeof(InventoryItem), 
 //                true) as InventoryItem;
-                itemTypes [i] = ItemManager.GetCachedItems () [i].itemName;
+                itemTypes [i] = ItemManager.SavedData[i].dataName;
             }
             for (int i = 0; i < bldg.costTypes.Count; i++) {
                 int selectedItem = bldg.costTypes [i].id;
                 selectedItem = EditorGUILayout.Popup (selectedItem, itemTypes);
-                bldg.costTypes [i] = ItemManager.GetCachedItems () [selectedItem];
+                bldg.costTypes [i] = ItemManager.SavedData [selectedItem];
             }
 
             EditorGUILayout.BeginHorizontal (); //Button Group for item types
@@ -128,19 +130,18 @@ public class BuildingEditorWindow : EditorWindow {
         EditorGUILayout.EndVertical ();
         EditorGUILayout.EndScrollView ();
         EditorGUILayout.EndHorizontal ();
-        if (bldgListPopulated) {
-            BuildingManager.SaveSelectedBuilding (bldgSelection, bldg);
+        if (bldgTypes.Length > 0) {
+            BuildingManager.SavedData [bldgSelection] = bldg;
         }
-
         EditorGUILayout.BeginHorizontal ();
         GUI.SetNextControlName ("Add");
         if (GUILayout.Button ("Add")) {
-            BuildingManager.AddBuilding ();
+            BuildingManager.AddData ();
             GUI.FocusControl ("Add");
         }
         GUI.SetNextControlName ("Delete");
         if (GUILayout.Button ("Delete")) {
-            BuildingManager.DeleteBuilding (bldgSelection);
+            BuildingManager.DeleteData (bldgSelection);
             if (bldgListPopulated) {
                 bldgSelection--;
             } else {
@@ -148,17 +149,26 @@ public class BuildingEditorWindow : EditorWindow {
             }
             GUI.FocusControl ("Delete");
         }
+        GUI.SetNextControlName ("Refresh");
+        if (GUILayout.Button ("Refresh")) {
+            LoadBuilding();
+            GUI.FocusControl ("Refresh");
+        }
         EditorGUILayout.EndHorizontal ();
+    }
 
+    void LoadBuilding () {
+        BuildingType loadedBldg = AssetDatabase.LoadAssetAtPath<BuildingType> ("Assets/Scripts/HouseBldg.asset");
+        BuildingManager.SavedData.Add (loadedBldg);
     }
 
     void RefreshBuildingData () {
-        bldgTypes = BuildingManager.GetCachedBuildings();
+        bldgTypes = BuildingManager.SavedData.ToArray ();
         strings = new string[bldgTypes.Length];
         ids = new string[bldgTypes.Length];
         cats = new string[bldgTypes.Length];
         for (int i = 0; i < bldgTypes.Length; i++) {
-            strings [i] = bldgTypes [i].buildingType;
+            strings [i] = bldgTypes [i].dataName;
             ids [i] = bldgTypes [i].id.ToString();
             cats [i] = bldgTypes [i].category.ToString();
         }

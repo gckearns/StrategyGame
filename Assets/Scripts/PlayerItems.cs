@@ -5,8 +5,8 @@ using StrategyGame;
 
 public class PlayerItems : MonoBehaviour {
 
-    public InventoryItem[] items;
-    public Dictionary<InventoryItem,int> itemDictionary;
+    public ItemType[] items;
+    public Dictionary<ItemType,int> itemDictionary;
 
 	// Use this for initialization
 	void Start () {
@@ -15,12 +15,12 @@ public class PlayerItems : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
-        items = ItemManager.GetCachedItems ();
+        items = ItemManager.SavedData.ToArray ();
         for (int i = 0; i < items.Length; i++) {
             itemDictionary.Add (items [i], 0);
         }
         int val;
-        itemDictionary.TryGetValue (items[0], out val);
-        print ("player has" + val + items[0].itemName);
+//        itemDictionary.TryGetValue (items[0], out val);
+//        print ("player has" + val + items[0].dataName);
 	}
 }

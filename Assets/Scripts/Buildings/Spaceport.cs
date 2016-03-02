@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public class Spaceport : InventoryItem {
+public class Spaceport : ItemType {
     public Ship basedShip;
 }
